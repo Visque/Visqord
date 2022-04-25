@@ -1,0 +1,96 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.container{
+    height: 100vh;
+    width: 100vw;
+    background-color: #0E2A36;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.sub-container{
+    background-color: aliceblue;
+
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 25px 20px;
+}
+
+.auth-form{
+    
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.auth-form *{
+    height: 2.5em;
+    width: 100%;
+    min-width: 250px;
+
+    margin: 10px 0;
+    border-width: 2px;
+
+    border-radius: 5px;
+}
+
+.auth-router{
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 5px 0;
+    height: 20px;
+    width: 100%;
+}
+
+.forgot-password{
+    margin-bottom: 1rem;
+}
+
+/* .input-form-displayPic{
+
+} */
+
+.error{
+    margin: 0;
+    color: #ff0000;
+}
+
+.btn{
+    border: none;
+    border-radius: 5px;
+    background-color: #59ce5c;
+    transition: 0.2s ease-in-out;
+}
+
+.btn:hover{
+    cursor: pointer;
+    background-color: #1fbe24;
+}
+
+.flex{
+    display: flex;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+a{
+    text-decoration: none;
+    color: #647ce7;
+    transition: 0.1s ease-in;
+}
+
+a:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    color: #3756e0;
+}

@@ -1,0 +1,57 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: whitesmoke;
+}
+
+.channel-item{
+    width: 200px;
+    border-radius: 5px;
+    padding: 10px 15px;
+    color: #7c8795;
+    transition: 0.1s ease-in-out;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.channel-list{
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.channel-item:hover{
+    cursor: pointer;
+    color: #7c8795;
+    background-color: #3B3E45;
+}
+
+.channel-name{
+    font-size: x-large;
+}
+
+.get-link{
+    font-size: medium;
+}
+
+
+
+.hide{
+    display: none;
+}
+
+.flex{
+    display: flex;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+a{
+    color: #7c8795;
+    text-decoration: none;
+}

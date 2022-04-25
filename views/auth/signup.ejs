@@ -1,0 +1,65 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/auth.css" />
+
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="container flex">
+      <div class="sub-container flex-column">
+        <h1 class="title">Register</h1>
+        <%- include('../partials/error', {errors: error}) %>
+        <form class="auth-form flex-column" action="/auth/signup" method="post">
+          <input
+            type="text"
+            class="form-input"
+            id="userName"
+            name="userName"
+            placeholder="Enter UserName"
+            required
+          />
+          <input
+            type="email"
+            class="form-input"
+            id="email"
+            name="email"
+            placeholder="Enter Email"
+            required
+          />
+          <input
+            type="text"
+            class="form-input"
+            id="region"
+            name="region"
+            placeholder="Region"
+            required
+          />
+          <input
+            type="password"
+            class="form-input"
+            id="password"
+            name="password"
+            placeholder="Enter Password"
+            required
+          />
+          <input
+            type="password"
+            class="form-input"
+            id="confirm-password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            required
+          />
+          <button type="submit" class="submit-btn btn">Sign Up</button>
+        </form>
+        <div class="auth-router flex">
+          <p>Have an Account?</p>
+          <a href="/auth/signin"> Sign In </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
