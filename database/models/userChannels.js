@@ -1,14 +1,10 @@
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema(
+const userChannelSchema = new mongoose.Schema(
   {
-    createdBy: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-      required: true,
-    },
-    message: {
-      type: String,
       required: true,
     },
     channelId: {
@@ -20,6 +16,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const postModel = mongoose.model("posts", postSchema);
+const userChannelModel = mongoose.model("userChannels", userChannelSchema);
 
-module.exports = postModel;
+module.exports = userChannelModel;

@@ -62,6 +62,7 @@ newChannelSubmit.onclick = (event) => {
 
     xhr.onload = () => {
         // Channel joined alert :)
+        window.location.href = "/"
     }
 }
 

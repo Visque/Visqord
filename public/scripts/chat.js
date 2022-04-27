@@ -18,6 +18,7 @@ messageSubmit.onclick = (event) => {
     message: message,
     userName: channelInfo.getAttribute("username"),
     userId: channelInfo.getAttribute("userid"),
+    channelId: channelInfo.getAttribute("key"),
   };
 
   var xhr = new XMLHttpRequest()
@@ -33,6 +34,9 @@ messageSubmit.onclick = (event) => {
 }
 
 socket.on("send message", (data) => {
+  if (channelInfo.getAttribute("key") != data.channelId){
+    return;
+  }
   var messageCont = document.createElement("div");
   
   if (channelInfo.getAttribute("userid") == data.userId){

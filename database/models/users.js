@@ -24,11 +24,6 @@ const userSchema = new mongoose.Schema(
       default: 0,
       required: true,
     },
-    channels: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "channels",
-      required: true,
-    },
   },
   { timestamps: true }
 );

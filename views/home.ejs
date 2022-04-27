@@ -38,7 +38,7 @@
               placeholder="#tags with space..."
             />
             <button type="submit" class="submit-btn" id="new-channel-submit">
-              Get Invite Link
+              Create
             </button>
           </div>
           <button id="show-create-channel" class="show-create-channel btn">
@@ -80,11 +80,13 @@
             Logout
           </a>
         </div>
-        <% if (selector === "dashboard") { %>
-          <%- include("./partials/dashboard.ejs") %> 
-        <% } else  { %>
-          <%- include("./partials/chat.ejs", {channel: selector, user: user, posts: posts}) %> 
-        <% } %>
+        <% if (selector.type === "dashboard") { %>
+          <div class="selector flex">
+            <%- include("./partials/dashboard.ejs", {trending: selector.dashboard}) %> 
+          </div>
+          <% } else  { %>
+            <%- include("./partials/chat.ejs", {channel: selector, user: user, posts: posts}) %> 
+          <% } %>
       </div>
     </div>
   </body>

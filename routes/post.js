@@ -5,6 +5,7 @@ const app = express.Router();
 
 // Database
 const channelModel = require("../database/models/channels");
+const userChannelModel = require("../database/models/userChannels");
 const postModel = require("../database/models/posts");
 const crypto = require("../encryption/encryption");
 

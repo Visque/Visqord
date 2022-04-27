@@ -15,21 +15,11 @@ const channelSchema = new mongoose.Schema(
       type: [String],
       required: false,
     },
-    members: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "users",
-      required: true,
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
       required: true,
     },
-    // x: {
-    //   type: Array,
-    //   of: mongoose.Schema.Types.ObjectId,
-    //   ref: "users",
-    // },
   },
   { timestamps: true }
 );

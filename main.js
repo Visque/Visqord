@@ -12,7 +12,6 @@ const auth = require("./routes/auth");
 const home = require("./routes/home");
 const channel = require("./routes/channel");
 const post = require("./routes/post");
-const req = require("express/lib/request");
 
 // MiddleWares
 
@@ -53,8 +52,8 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("new message", (data) => {
-    console.log('send to all: ', data, data.userId);
-    io.emit("send message", { message: data.message, userName: data.userName, userId: data.userId });
+    console.log('send to all: ', data);
+    io.emit("send message", { message: data.message, userName: data.userName, userId: data.userId, channelId: data.channelId });
   });
 
   socket.on("new user", (usr) => {

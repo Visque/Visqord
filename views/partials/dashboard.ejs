@@ -1,3 +1,44 @@
-<div class="dashboard">
-    <h2>dashboard</h2>
+<link rel="stylesheet" href="styles/dashboard.css">
+<div class="dashboard flex-column">
+    <div class="title flex">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="sub-container flex-column">
+        <div class="sub-container-2 flex">
+            <h2 class="dash-cont-header">Top <%= trending.trendingChannels.length %> Channels&nbsp;</h2>
+            <h2>:</h2>
+            <div class="dash-cont-item">
+                <% for( let index = 0; index < trending.trendingChannels.length; index++ ) { %>
+                        <h2> <%= trending.trendingChannels[index].channel.channelName %>   &nbsp;</h2>
+                <% } %>
+            </div>
+        </div>
+        <div class="flex">
+            <h2 class="dash-cont-header">Top <%= trending.trendingTags.length %> Tags&nbsp;</h2>
+            <h2>:</h2>
+            <div class="dash-cont-item">
+                <% for( let index = 0; index < trending.trendingTags.length; index++ ) { %>
+                        <h2> <%= trending.trendingTags[index]._id %>   &nbsp;</h2>
+                <% } %>
+            </div>
+        </div>
+        <div class="flex">
+            <h2 class="dash-cont-header">Top <%= trending.trendingRegions.length %> Regions with Active users&nbsp;</h2>
+            <h2>:</h2>
+            <div class="dash-cont-item">
+                <% for( let index = 0; index < trending.trendingRegions.length; index++ ) { %>
+                        <h2> <%= trending.trendingRegions[index]._id %>   &nbsp;</h2>
+                <% } %>
+            </div>
+        </div>
+        <div class="flex">
+            <h2 class="dash-cont-header">Top <%= trending.trendingUsers.length %> users&nbsp;</h2>
+            <h2>:</h2>
+            <div class="dash-cont-item">
+                <% for( let index = 0; index < trending.trendingUsers.length; index++ ) { %>
+                        <h2> <%= trending.trendingUsers[index].user.userName %>   &nbsp;</h2>
+                <% } %>
+            </div>
+        </div>
+    </div>
 </div>
