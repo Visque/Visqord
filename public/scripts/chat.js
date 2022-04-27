@@ -10,7 +10,7 @@ let messageLimit = 10;
 let messageLimitMax = false;
 
 chatBoxMessages.onscroll = () => {
-  console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
+  // console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
 
   // LAZY LOADING
   if (chatBoxMessages.scrollTop === 0) {
@@ -33,12 +33,12 @@ chatBoxMessages.onscroll = () => {
 
       posts.forEach(post => {
         var messageCont = document.createElement("div");
-        console.log(
-          typeof channelInfo.getAttribute("userid"),
-          typeof String(post.createdBy._id),
-          channelInfo.getAttribute("userid").trim() ===
-          String(post.createdBy._id).trim()
-        );
+        // console.log(
+        //   typeof channelInfo.getAttribute("userid"),
+        //   typeof String(post.createdBy._id),
+        //   channelInfo.getAttribute("userid").trim() ===
+        //   String(post.createdBy._id).trim()
+        // );
 
         if (channelInfo.getAttribute("userid").trim() == post.createdBy._id) {
           messageCont.setAttribute("class", "message right");

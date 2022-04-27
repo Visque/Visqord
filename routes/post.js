@@ -22,7 +22,7 @@ app
   .get((req, res) => {
     let startLimit = Number(req.query.startLimit);
     let channelId = req.query.channelId;
-    console.log('queries : ', typeof startLimit)
+    // console.log('queries : ', typeof startLimit)
     getNextTenPost(channelId, startLimit, function(posts){
       res.end(JSON.stringify(posts))
     })
@@ -31,10 +31,10 @@ app
     var userId = req.session.userId;
     var postData = req.body;
     postData.createdBy = userId;
-    console.log('log post data: ', postData);
+    // console.log('log post data: ', postData);
 
     savePost(postData, function (cartId) {
-      console.log("Post Saved succesfully");
+      // console.log("Post Saved succesfully");
       res.end()
     });
   });
@@ -47,7 +47,7 @@ function savePost(postData, callback){
 }
 
 function getNextTenPost(channelId, startLimit, callback){
-  console.log('lettuce: ', channelId, startLimit)
+  // console.log('lettuce: ', channelId, startLimit)
   postModel
     .aggregate([
       {
@@ -79,7 +79,7 @@ function getNextTenPost(channelId, startLimit, callback){
       posts.forEach((post) => {
         post.createdBy = post.createdBy[0];
       });
-      console.log("lazy: ", posts);
+      // console.log("lazy: ", posts);
       callback(posts);
     });
 }

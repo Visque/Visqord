@@ -29,9 +29,9 @@ app
     // console.log(channelData)
 
     saveChannel(channelData, function (channelId) {
-      console.log("channel Saved succesfully");
+      // console.log("channel Saved succesfully");
       addUserChannel(userId, channelId, function () {
-        console.log("channel added to usersChannel");
+        // console.log("channel added to usersChannel");
         res.end();
       });
     });
@@ -93,7 +93,7 @@ app.route("/invite/:channelId").get((req, res) => {
       return;
     } else {
       addUserChannel(userId, channelId, function () {
-        console.log("added user to channel :)");
+        // console.log("added user to channel :)");
         res.end("/");
       });
     }
@@ -104,7 +104,7 @@ app.route("/invite/:channelId").get((req, res) => {
 
 function saveChannel(newChannel, callback) {
   channelModel.create(newChannel).then((channel) => {
-    console.log("logging channel: ", channel);
+    // console.log("logging channel: ", channel);
     callback(channel._id);
   });
 }
@@ -177,7 +177,7 @@ function getChannelPosts(channelId, callback){
 }
 
 function sortChannelsToUserPosts(userId, channels, callback) {
-  console.log("sorting :)");
+  // console.log("sorting :)");
   let map = [];
   channels.forEach((channel) => {
     // console.log("Entry channels :)");

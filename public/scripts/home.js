@@ -7,7 +7,7 @@ const joinChannelSubmit = document.getElementById("join-channel-submit");
 const joinChannelInput = document.getElementById("join-channel-link");
 const inviteLinkList = document.querySelectorAll("#get-link");
 // const channelItem = document.getElementById("channel-item");
-console.log(inviteLinkList.length);
+// console.log(inviteLinkList.length);
 
 showCreateChannelBtn.onclick = (event) => {
     if(newChannelContainer.classList.contains("hide")){
@@ -48,7 +48,7 @@ newChannelSubmit.onclick = (event) => {
     tags = tags.map(tag => {
         return ('#' + tag);
     });
-    console.log("tags: ", tags)
+    // console.log("tags: ", tags)
     var channelData = {
       channelName: newChannelContainer.children[0].value,
       description: newChannelContainer.children[1].value,
@@ -71,7 +71,7 @@ joinChannelSubmit.onclick = (event) => {
     var invLink = joinChannelInput.value.trim();
 
     var temp = invLink.split("/")
-    console.log(temp)
+    // console.log(temp)
     var link = "/" + temp[3] + "/" + temp[4] + "/" + temp[5];
 
     var xhr = new XMLHttpRequest();
@@ -80,7 +80,7 @@ joinChannelSubmit.onclick = (event) => {
 
     xhr.onload = () => {
       // Channel joined alert :)
-      console.log("csr user added :) to channel :)")
+    //   console.log("csr user added :) to channel :)")
       window.location.href = "/"
     };
 }
@@ -98,10 +98,10 @@ for (let index = 0; index < inviteLinkList.length; index++) {
   let inviteLinkBtn = inviteLinkList[index];
   inviteLinkBtn.onclick = (event) => {
     var channelItem = inviteLinkBtn.parentElement;
-    console.log(channelItem);
+    // console.log(channelItem);
     var key = channelItem.getAttribute("key");
     var inviteLink = "http://localhost:3000/channel/invite/" + key;
-    console.log('link: ', inviteLink.trim())
+    // console.log('link: ', inviteLink.trim())
     navigator.clipboard.writeText(inviteLink);
 
     // invite link copied to clipboard :)

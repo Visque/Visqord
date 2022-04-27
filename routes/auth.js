@@ -65,7 +65,7 @@ app
     res.render("auth/signup.ejs", context);
   })
   .post((req, res) => {
-    console.log("log req body: ", req.body);
+    // console.log("log req body: ", req.body);
     var userName = req.body.userName;
     var email = req.body.email;
     var region = req.body.region;
@@ -84,7 +84,7 @@ app
       region: region,
     };
 
-    console.log("log check userData: ", userData);
+    // console.log("log check userData: ", userData);
 
     saveUser(userData, function () {
       res.redirect("/auth/signin");

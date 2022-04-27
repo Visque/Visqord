@@ -24,7 +24,7 @@ app.route("/").get((req, res) => {
   findUser({ _id: userId }, function (user) {
     if (user.status !== 0) {
       // User is Authenticated :)
-      console.log("user is authenticated :)))");
+      // console.log("user is authenticated :)))");
       var context = {};
       getUserChannels(userId, function (channels) {
         // channels = channels.map(channel => ({
@@ -60,7 +60,7 @@ app.route("/").get((req, res) => {
                     context.selector.dashboard.trendingUsers = trendingUsers;
                     context.selector.dashboard.trendingTags = trendingTags;
                     context.selector.dashboard.trendingRegions = trendingRegions;
-                    console.log("testing context: ", context.selector.dashboard);
+                    // console.log("testing context: ", context.selector.dashboard);
                     res.render("home.ejs", context);
                   });
                 });
@@ -249,16 +249,16 @@ function getUserPosts(userId, callback) {
 }
 
 function sortChannelsToUserPosts(userId, channels, callback) {
-  console.log("sorting :)");
+  // console.log("sorting :)");
   let map = [];
   if (!channels.length) callback([]);
   channels.forEach((channel) => {
-    console.log("Entry channels :)");
+    // console.log("Entry channels :)");
     postModel
       .find({ createdBy: userId, channelId: channel._id })
       .populate("channelId")
       .then((posts) => {
-        console.log("Entry post :)");
+        // console.log("Entry post :)");
         map.push({ channel: channel, userChannelPostCount: posts.length });
         if (map.length == channels.length) {
           // console.log('user channels posts b4: ', map)
@@ -270,7 +270,7 @@ function sortChannelsToUserPosts(userId, channels, callback) {
           map.forEach((item) => {
             sortedChannels.push(item.channel);
           });
-          console.log("user channels posts a4: ", map);
+          // console.log("user channels posts a4: ", map);
           callback(sortedChannels);
         }
       });
