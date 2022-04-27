@@ -7,7 +7,7 @@
     </div>
     <div class="chat-box flex-column">
         <div id="chat-box-messages" class="chat-box-messages">
-            <% for( let index = 0; index < posts.length; index++ ) { %>
+            <% for( let index = posts.length-1; index >= 0; index-- ) { %>
                 <% if (user.userId == posts[index].createdBy._id) { %>
                     <div class="message right">
                         <div class="user-name"><%= posts[index].createdBy.userName %> </div>

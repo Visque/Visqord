@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const mongoose = require("mongoose");
 
 const app = express.Router();
 
@@ -41,22 +42,22 @@ app.route("/:channelId").get((req, res) => {
   var userId = req.session.userId;
   var userName = req.session.userName;
 
-  console.log("decrypted channel id: ", channelId);
+  // console.log("decrypted channel id: ", channelId);
   var context = {};
   getUserChannels(userId, function (channels) {
-    console.log("user channels: ", channels)
+    // console.log("user channels: ", channels)
 
     getChannelPosts(channelId, function (posts) {
 
       sortChannelsToUserPosts(userId, channels, function(channels){
-        console.log("channel posts: ", posts);
+        // console.log("channel posts: ", posts);
         posts.sort((a, b) => a.createdAt < b.createdAt);
   
         context.channels = channels;
         context.user = { userId: userId, userName: userName };
         context.posts = posts;
   
-        console.log(context);
+        // console.log(context);
   
         context.selector = channels.filter((channel) => {
           return channel._id == channelId;
@@ -122,11 +123,47 @@ function getUserChannels(userId, callback) {
   }
 }
 
-function getChannelPosts(channelId, callback) {
+// function getChannelPosts(channelId, callback) {
+//   postModel
+//     .find({ channelId: channelId })
+//     .populate("createdBy")
+//     .then((postList) => {
+//       console.log('normal: ', postList)
+//       callback(postList);
+//     });
+// }
+
+function getChannelPosts(channelId, callback){
   postModel
-    .find({ channelId: channelId })
-    .populate("createdBy")
+    .aggregate([
+      {
+        $match: {
+          channelId: mongoose.Types.ObjectId(channelId),
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+    ])
     .then((postList) => {
+      postList
+      postList.forEach((post) => {
+        post.createdBy = post.createdBy[0];
+      });
+      // console.log("aggregate: ", postList);
       callback(postList);
     });
 }
@@ -135,12 +172,12 @@ function sortChannelsToUserPosts(userId, channels, callback) {
   console.log("sorting :)");
   let map = [];
   channels.forEach((channel) => {
-    console.log("Entry channels :)");
+    // console.log("Entry channels :)");
     postModel
       .find({ createdBy: userId, channelId: channel._id })
       .populate("channelId")
       .then((posts) => {
-        console.log("Entry post :)");
+        // console.log("Entry post :)");
         map.push({ channel: channel, userChannelPostCount: posts.length });
         if (map.length == channels.length) {
           // console.log('user channels posts b4: ', map)
@@ -152,7 +189,7 @@ function sortChannelsToUserPosts(userId, channels, callback) {
           map.forEach((item) => {
             sortedChannels.push(item.channel);
           });
-          console.log("user channels posts a4: ", map);
+          // console.log("user channels posts a4: ", map);
           callback(sortedChannels);
         }
       });

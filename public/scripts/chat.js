@@ -4,6 +4,58 @@ const channelInfo = document.getElementById("channel-info");
 const chatBoxMessages = document.getElementById("chat-box-messages");
 const socket = io();
 
+chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
+
+let messageLimit = 10;
+
+chatBoxMessages.onscroll = () => {
+  console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
+
+  // LAZY LOADING
+  if (chatBoxMessages.scrollTop === 0) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("get", `/post?startLimit=`+messageLimit+`&channelId=`+channelInfo.getAttribute("key"))
+    xhr.send()
+
+    xhr.onload = () => {
+      let posts = JSON.parse(xhr.response);
+      messageLimit = messageLimit + 10;
+
+      // ADD all the posts by CSR
+
+      posts.forEach(post => {
+        var messageCont = document.createElement("div");
+        console.log(
+          typeof channelInfo.getAttribute("userid"),
+          typeof String(post.createdBy._id),
+          channelInfo.getAttribute("userid").trim() ===
+          String(post.createdBy._id).trim()
+        );
+
+        if (channelInfo.getAttribute("userid").trim() == post.createdBy._id) {
+          messageCont.setAttribute("class", "message right");
+        } else {
+          messageCont.setAttribute("class", "message left");
+        }
+
+        var userName = document.createElement("div");
+        userName.setAttribute("class", "user-name");
+        userName.innerHTML = `${post.createdBy.userName}`;
+
+        var userMessage = document.createElement("div");
+        userMessage.setAttribute("class", "user-message");
+        userMessage.innerHTML = `${post.message}`;
+
+        messageCont.appendChild(userName);
+        messageCont.appendChild(userMessage);
+
+        chatBoxMessages.prepend(messageCont);
+      })
+
+    };
+  }
+};
+
 messageSubmit.onclick = (event) => {
   var message = inputMessage.value.trim();
   if(message === ""){
@@ -60,6 +112,5 @@ socket.on("send message", (data) => {
   chatBoxMessages.appendChild(messageCont);
   chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
 })
-
 
 // Create route post and save post to 

@@ -140,7 +140,7 @@ function trendingTags(callback) {
       {
         $sort: {
           count: -1,
-        }
+        },
       },
       {
         $limit: 5,
@@ -207,7 +207,7 @@ function trendingUsers(callback) {
     ])
     .limit(5)
     .then((trendingUsers) => {
-      
+
       trendingUsers.forEach((trendingUser) => {
         trendingUser.user = trendingUser.user[0];
       });
