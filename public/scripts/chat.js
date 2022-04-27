@@ -7,12 +7,16 @@ const socket = io();
 chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
 
 let messageLimit = 10;
+let messageLimitMax = false;
 
 chatBoxMessages.onscroll = () => {
   console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
 
   // LAZY LOADING
   if (chatBoxMessages.scrollTop === 0) {
+    if (messageLimitMax === true) {
+      return;
+    } 
     let xhr = new XMLHttpRequest();
     xhr.open("get", `/post?startLimit=`+messageLimit+`&channelId=`+channelInfo.getAttribute("key"))
     xhr.send()
@@ -22,6 +26,10 @@ chatBoxMessages.onscroll = () => {
       messageLimit = messageLimit + 10;
 
       // ADD all the posts by CSR
+      if(!posts.length){
+        messageLimitMax = true
+        return;
+      } 
 
       posts.forEach(post => {
         var messageCont = document.createElement("div");
@@ -52,6 +60,8 @@ chatBoxMessages.onscroll = () => {
         chatBoxMessages.prepend(messageCont);
       })
 
+      chatBoxMessages.scrollTo(0, 10);
+      
     };
   }
 };

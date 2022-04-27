@@ -77,8 +77,10 @@ app.route("/").get((req, res) => {
 
 app.route("/logout").get((req, res) => {
   // TODO: set user status to offline
-  if (!req.session.isLoggedIn) res.redirect("/auth");
-
+  if (!req.session.isLoggedIn){
+    res.redirect("/auth");
+    return;
+  } 
   setUserStatus(req.session.userId, 0, function () {
     req.session.destroy();
     res.redirect("/auth");

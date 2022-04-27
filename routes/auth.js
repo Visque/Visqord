@@ -9,6 +9,23 @@ const userModel = require("../database/models/users");
 
 db.start();
 
+// Set All users status as offline
+
+
+async function firstAsync() {
+  let promise = new Promise((res, rej) => {
+      userModel.updateMany({ status: 0 }).then(() => {
+        console.log("all user status set to 0 :)");
+      });
+  });
+
+  // wait until the promise returns us a value
+  let result = await promise; 
+
+  // "Now it's done!"
+}
+firstAsync();
+
 // MiddleWares
 // app.use(express.json());
 // app.use(express.urlencoded());
