@@ -38,6 +38,10 @@ app
   });
 
 app.route("/:channelId").get((req, res) => {
+  if (!req.session.isLoggedIn) {
+    res.redirect("/");
+    return;
+  }
   var channelId = req.params.channelId; // decrypt
   var userId = req.session.userId;
   var userName = req.session.userName;
@@ -71,6 +75,10 @@ app.route("/:channelId").get((req, res) => {
 });
 
 app.route("/invite/:channelId").get((req, res) => {
+  if (!req.session.isLoggedIn) {
+    res.redirect("/");
+    return;
+  }
   var userId = req.session.userId;
   var channelId = req.params.channelId;                             // Decrypt
 
