@@ -3,8 +3,9 @@ const session = require("express-session");
 const crypto = require("./encryption/encryption");
 
 const app = express();
+const PORT = process.env.PORT || 5000
 
-const http = require("http");
+const http = require("http"); 
 const server = http.createServer(app);
 
 // Router Imports
@@ -71,7 +72,7 @@ io.on("connection", (socket) => {
 
 
 // ServerListener
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log(`Server is Live and running :)`);
 });
 
