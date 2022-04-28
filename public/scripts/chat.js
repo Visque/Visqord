@@ -67,6 +67,7 @@ function lazyLoadChat(event){
 
         chatBoxMessages.prepend(messageCont);
       });
+      chatBoxMessages.scrollTo(0, 10);
     };
   }
 };
