@@ -1,6 +1,6 @@
 .dashboard{
-    width: auto;
-    background-color: antiquewhite;
+    width: 100%;
+    background-image: linear-gradient(to bottom, #FAEBD7, #FAEBD7, #e8d0d0, #e4dbdb);
     border-radius: 10px;
     padding: 15px 10px;
     max-height: 60%;
@@ -22,19 +22,24 @@
     justify-content: space-around;
 }
 
+.row-data > td{
+    padding: 10px 5px;
+    text-align: center;
+}
+
 .sub-container-2{
-    justify-content: space-around;
+    width: 100%;
+    justify-content: flex-start;
 }
 
 .dash-cont-header{
-    width: 35%;
+    width: auto;
     color: rgb(97, 81, 81);
 }
 
 .dash-cont-item{
-    min-width: 70%;
     width: auto;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
 }

@@ -4,41 +4,98 @@
         <h1>Dashboard</h1>
     </div>
     <div class="sub-container flex-column">
-        <div class="sub-container-2 flex">
-            <h2 class="dash-cont-header">Top <%= trending.trendingChannels.length %> Channels&nbsp;</h2>
-            <h2>:</h2>
-            <div class="dash-cont-item">
-                <% for( let index = 0; index < trending.trendingChannels.length; index++ ) { %>
-                        <h2> <%= trending.trendingChannels[index].channel.channelName %>   &nbsp;</h2>
+        <table>
+            <tr>
+                <% for( let index = 0; index < Object.keys(trending).length; index++ ) { %>
+                    <th colspan="2">
+                        <h2 class="dash-cont-header">Top 
+                            <%= trending[Object.keys(trending)[index]].length %> 
+                        </h2>
+                    </th>
                 <% } %>
-            </div>
-        </div>
-        <div class="flex">
-            <h2 class="dash-cont-header">Top <%= trending.trendingTags.length %> Tags&nbsp;</h2>
-            <h2>:</h2>
-            <div class="dash-cont-item">
-                <% for( let index = 0; index < trending.trendingTags.length; index++ ) { %>
-                        <h2> <%= trending.trendingTags[index]._id %>   &nbsp;</h2>
+            </tr>
+            <tr>
+                <% for( let index = 0; index < Object.keys(trending).length; index++ ) { %>
+                    <th>
+                        <% if (String(Object.keys(trending)[index]) == "trendingChannels") { %>
+                            Channels
+                        <% } else if (String(Object.keys(trending)[index]) == "trendingRegions") { %>
+                            Regions
+                        <% } else if (String(Object.keys(trending)[index]) == "trendingTags") { %>
+                            Tags
+                        <% } else if (String(Object.keys(trending)[index]) == "trendingUsers") { %>
+                            Users
+                        <% } %>
+                    </th>
+                    <th>Count</th>
                 <% } %>
-            </div>
-        </div>
-        <div class="flex">
-            <h2 class="dash-cont-header">Top <%= trending.trendingRegions.length %> Regions with Active users&nbsp;</h2>
-            <h2>:</h2>
-            <div class="dash-cont-item">
-                <% for( let index = 0; index < trending.trendingRegions.length; index++ ) { %>
-                        <h2> <%= trending.trendingRegions[index]._id %>   &nbsp;</h2>
-                <% } %>
-            </div>
-        </div>
-        <div class="flex">
-            <h2 class="dash-cont-header">Top <%= trending.trendingUsers.length %> users&nbsp;</h2>
-            <h2>:</h2>
-            <div class="dash-cont-item">
-                <% for( let index = 0; index < trending.trendingUsers.length; index++ ) { %>
-                        <h2> <%= trending.trendingUsers[index].user.userName %>   &nbsp;</h2>
-                <% } %>
-            </div>
-        </div>
+            </tr>
+            <% for( let index = 0; index < 5; index++ ) { %>
+                <tr class="row-data">
+                    <% if (trending.trendingChannels[index]) { %>
+                        <td>
+                            <%= trending.trendingChannels[index].channel.channelName %> 
+                        </td>
+                        <td>
+                            <%= trending.trendingChannels[index].count %> 
+                        </td>
+                    <% } else { %>
+                        <td>
+                            
+                        </td>    
+                        <td>
+
+                        </td>
+                    <% } %>
+                    <% if (trending.trendingUsers[index]) { %>
+                        <td>
+                            <%= trending.trendingUsers[index].user.userName %> 
+                        </td>
+                        <td>
+                            <%= trending.trendingUsers[index].count %> 
+                        </td>
+                    <% } else { %>
+                        <td>
+                            
+                        </td>    
+                        <td>
+
+                        </td>
+                    <% } %>
+                    
+                    <% if (trending.trendingTags[index]) { %>
+                        <td>
+                            <%= trending.trendingTags[index]._id %> 
+                        </td>
+                        <td>
+                            <%= trending.trendingTags[index].count %> 
+                        </td>
+                    <% } else { %>
+                        <td>
+                            
+                        </td>    
+                        <td>
+
+                        </td>
+                    <% } %>
+                    <% if (trending.trendingRegions[index]) { %>
+                        <td>
+                            <%= trending.trendingRegions[index]._id %> 
+                        </td>
+                        <td>
+                            <%= trending.trendingRegions[index].count %> 
+                        </td>
+                    <% } else { %>
+                        <td>
+                            
+                        </td>    
+                        <td>
+
+                        </td>
+                    <% } %>
+                </tr>
+            <% } %>
+
+        </table>
     </div>
 </div>

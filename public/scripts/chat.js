@@ -9,29 +9,37 @@ chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
 let messageLimit = 10;
 let messageLimitMax = false;
 
-chatBoxMessages.onscroll = () => {
-  // console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
+chatBoxMessages.onscroll = (event) => lazyLoadChat()
 
+function lazyLoadChat(event){
+  console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight/4);
   // LAZY LOADING
-  if (chatBoxMessages.scrollTop === 0) {
+  if (chatBoxMessages.scrollTop <= (chatBoxMessages.scrollHeight)/4) {
     if (messageLimitMax === true) {
       return;
-    } 
+    }
     let xhr = new XMLHttpRequest();
-    xhr.open("get", `/post?startLimit=`+messageLimit+`&channelId=`+channelInfo.getAttribute("key"))
-    xhr.send()
+    xhr.open(
+      "get",
+      `/post?startLimit=` +
+        messageLimit +
+        `&channelId=` +
+        channelInfo.getAttribute("key")
+    );
+    xhr.send();
 
     xhr.onload = () => {
+      console.log(messageLimit);
       let posts = JSON.parse(xhr.response);
       messageLimit = messageLimit + 10;
 
       // ADD all the posts by CSR
-      if(!posts.length){
-        messageLimitMax = true
+      if (!posts.length) {
+        messageLimitMax = true;
         return;
-      } 
+      }
 
-      posts.forEach(post => {
+      posts.forEach((post) => {
         var messageCont = document.createElement("div");
         // console.log(
         //   typeof channelInfo.getAttribute("userid"),
@@ -58,10 +66,7 @@ chatBoxMessages.onscroll = () => {
         messageCont.appendChild(userMessage);
 
         chatBoxMessages.prepend(messageCont);
-      })
-
-      chatBoxMessages.scrollTo(0, 10);
-      
+      });
     };
   }
 };

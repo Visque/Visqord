@@ -60,7 +60,7 @@ app.route("/").get((req, res) => {
                     context.selector.dashboard.trendingUsers = trendingUsers;
                     context.selector.dashboard.trendingTags = trendingTags;
                     context.selector.dashboard.trendingRegions = trendingRegions;
-                    // console.log("testing context: ", context.selector.dashboard);
+                    console.log("testing context: ", context.selector.dashboard);
                     res.render("home.ejs", context);
                   });
                 });
