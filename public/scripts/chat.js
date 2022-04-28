@@ -14,7 +14,7 @@ chatBoxMessages.onscroll = (event) => lazyLoadChat()
 function lazyLoadChat(event){
   console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight/4);
   // LAZY LOADING
-  if (chatBoxMessages.scrollTop <= (chatBoxMessages.scrollHeight)/4) {
+  if (chatBoxMessages.scrollTop === 0) {
     if (messageLimitMax === true) {
       return;
     }
