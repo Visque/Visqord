@@ -1,32 +1,43 @@
-<link rel="stylesheet" href="styles/chat.css">
+<link rel="stylesheet" href="styles/chat.css" />
+
 <div class="chat-container flex-column">
-    <div id="channel-info" class="channel-info" key="<%= channel._id %>" username="<%= user.userName %> " userid="<%= user.userId %> ">
-        <div class="channel-name"><%= channel.channelName %> </div>
-        <div class="channel-desc"><%= channel.description %> </div>
-        <div class="channel-tags"><%= channel.tags %> </div>
+  <div
+    id="channel-info"
+    class="channel-info"
+    key="<%= channel._id %>"
+    username="<%= user.userName %>"
+    userid="<%= user.userId %>"
+  >
+    <div class="channel-name"><%= channel.channelName %></div>
+    <div class="channel-desc"><%= channel.description %></div>
+    <div class="channel-tags"><%= channel.tags %></div>
+  </div>
+  <div class="chat-box flex-column">
+    <div id="chat-box-messages" class="chat-box-messages">
+      <% for( let index = posts.length-1; index >= 0; index-- ) { %> <% if
+      (user.userId == posts[index].createdBy._id) { %>
+      <div class="message right">
+        <div class="user-name"><%= posts[index].createdBy.userName %></div>
+        <div class="user-message"><%= posts[index].message %></div>
+      </div>
+      <% } else { %>
+      <div class="message left">
+        <div class="user-name"><%= posts[index].createdBy.userName %></div>
+        <div class="user-message"><%= posts[index].message %></div>
+      </div>
+      <% } %> <% } %>
     </div>
-    <div class="chat-box flex-column">
-        <div id="chat-box-messages" class="chat-box-messages">
-            <% for( let index = posts.length-1; index >= 0; index-- ) { %>
-                <% if (user.userId == posts[index].createdBy._id) { %>
-                    <div class="message right">
-                        <div class="user-name"><%= posts[index].createdBy.userName %> </div>
-                        <div class="user-message"> <%= posts[index].message %> </div>
-                    </div>
-                 <% } else { %>
-                    <div class="message left">
-                        <div class="user-name"><%= posts[index].createdBy.userName %> </div>
-                        <div class="user-message"><%= posts[index].message %></div>
-                    </div>
-                <% } %>
-            
-            <% } %>
-        </div>
-        <div class="message-input-container flex">
-            <input type="text" id="message-input" class="message-input">
-            <button type="submit" id="message-submit" class="message-submit submit-btn">Send</button>
-        </div>
+    <div class="message-input-container flex">
+      <input type="text" id="message-input" class="message-input" />
+      <button
+        type="submit"
+        id="message-submit"
+        class="message-submit submit-btn"
+      >
+        Send
+      </button>
     </div>
+  </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="scripts/chat.js"></script>

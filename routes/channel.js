@@ -42,7 +42,7 @@ app.route("/:channelId").get((req, res) => {
     res.redirect("/");
     return;
   }
-  var channelId = req.params.channelId; // decrypt
+  var channelId = req.params.channelId
   var userId = req.session.userId;
   var userName = req.session.userName;
 
@@ -54,8 +54,22 @@ app.route("/:channelId").get((req, res) => {
     getChannelPosts(channelId, function (posts) {
 
       sortChannelsToUserPosts(userId, channels, function(channels){
-        // console.log("channel posts: ", posts);
+        console.log("channel posts: ", posts);
         posts.sort((a, b) => a.createdAt < b.createdAt);
+
+        // channels.forEach(channel => {
+        //   let id = channel._id
+        //   id = crypto.encrypt(id)
+        //   console.log('id logger: ', id)
+        //   channel.tempId = id;
+        //   console.log("id logger: ", channel._id);
+        // })
+
+        // posts.forEach((post) => {
+        //   let id = post._id;
+        //   id = crypto.encrypt(id);
+        //   post._id = id;
+        // });
   
         context.channels = channels;
         context.user = { userId: userId, userName: userName };
@@ -66,6 +80,10 @@ app.route("/:channelId").get((req, res) => {
         context.selector = channels.filter((channel) => {
           return channel._id == channelId;
         })[0];
+
+        // let tempId = context.selector._id;
+        // tempId = crypto.encrypt(tempId);
+        // context.selector._id = tempId;
   
         // console.log("channels/ context: ", context);
         res.render("home.ejs", context);
@@ -79,6 +97,9 @@ app.route("/invite/:channelId").get((req, res) => {
     res.redirect("/");
     return;
   }
+
+  // var channelId = crypto.decrypt(req.params.channelId);
+  // var userId = crypto.decrypt(req.params.userId);
   var userId = req.session.userId;
   var channelId = req.params.channelId;                             // Decrypt
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
-// const crypto = require("../encryption/encryption");
+const crypto = require("../encryption/encryption");
+const mongoose = require("mongoose");
 
 const app = express.Router();
 
@@ -27,40 +28,49 @@ app.route("/").get((req, res) => {
       // console.log("user is authenticated :)))");
       var context = {};
       getUserChannels(userId, function (channels) {
-        // channels = channels.map(channel => ({
-        //   ...channel,
-        //   _id: crypto.encrypt(JSON.stringify(channel._id)),
-        // }))
-        // for (var i = 0; i < channels.length; ++i) {
-        //   console.log('b4: ', channels[i]._id);
-        //   channels[i]._id = crypto.encrypt(JSON.stringify(channels[i]._id));
-        //   console.log('a4: ', crypto.encrypt(JSON.stringify(channels[i]._id)));
-        // }
-        var postSearchCondition = {
-          createdBy: userId,
-        };
         getUserPosts(userId, function (posts) {
           sortChannelsToUserPosts(userId, channels, function (channels) {
-            context.user = { userId: userId, userName: userName };
-            context.channels = channels;
-            context.posts = posts;
-            context.selector = {};
-            context.selector.type = "dashboard";
-            context.selector.dashboard = {};
-
             trendingChannels(function (trendingChannels) {
-
               trendingUsers(function (trendingUsers) {
-
                 trendingTags(function (trendingTags) {
-
                   trendingRegions(function (trendingRegions) {
-                    
+
+                    // console.log("encrypting channels: ")
+                    // channels.forEach((channel) => {
+                    //   // channel._id = mongoose.Types.ObjectId()
+                    //   var id = channel._id;
+                    //   id = crypto.encrypt(id + "");
+                    //   channel._id = id;
+                    //   console.log("one: ", channel);
+                    // });
+
+                    // console.log("encrypting posts: ");
+                    // posts.forEach((post) => {
+                    //   var id = post.createdBy._id;
+                    //   id = crypto.encrypt(id + "");
+                    //   post.createdBy._id = id;
+                    //   console.log('two: ', id)
+                    // });
+
+                    context.user = {
+                      userId: userId,
+                      userName: userName,
+                    };
+
+                    context.channels = channels;
+                    context.posts = posts;
+                    context.selector = {};
+                    context.selector.type = "dashboard";
+                    context.selector.dashboard = {};
+
                     context.selector.dashboard.trendingChannels = trendingChannels;
                     context.selector.dashboard.trendingUsers = trendingUsers;
                     context.selector.dashboard.trendingTags = trendingTags;
                     context.selector.dashboard.trendingRegions = trendingRegions;
-                    console.log("testing context: ", context.selector.dashboard);
+                    console.log(
+                      "testing context: ",
+                      context.selector.dashboard
+                    );
                     res.render("home.ejs", context);
                   });
                 });
@@ -77,15 +87,18 @@ app.route("/").get((req, res) => {
 
 app.route("/logout").get((req, res) => {
   // TODO: set user status to offline
-  if (!req.session.isLoggedIn){
+  if (!req.session.isLoggedIn) {
     res.redirect("/auth");
     return;
-  } 
+  }
   setUserStatus(req.session.userId, 0, function () {
     req.session.destroy();
     res.redirect("/auth");
   });
 });
+
+
+
 // Functions
 
 function trendingChannels(callback) {
@@ -108,14 +121,13 @@ function trendingChannels(callback) {
       {
         $sort: {
           count: -1,
-        }
+        },
       },
       {
         $limit: 5,
       },
     ])
     .then((trendingPosts) => {
-
       trendingPosts.forEach((trendingPost) => {
         trendingPost.channel = trendingPost.channel[0];
       });
@@ -170,14 +182,13 @@ function trendingRegions(callback) {
       {
         $sort: {
           count: -1,
-        }
+        },
       },
       {
         $limit: 5,
       },
     ])
     .then((trendingRegions) => {
-
       callback(trendingRegions);
     });
 }
@@ -196,7 +207,7 @@ function trendingUsers(callback) {
       {
         $sort: {
           count: -1,
-        }
+        },
       },
       {
         $lookup: {
@@ -209,7 +220,6 @@ function trendingUsers(callback) {
     ])
     .limit(5)
     .then((trendingUsers) => {
-
       trendingUsers.forEach((trendingUser) => {
         trendingUser.user = trendingUser.user[0];
       });

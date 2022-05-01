@@ -8,14 +8,16 @@ chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
 
 let messageLimit = 10;
 let messageLimitMax = false;
+let gettingPosts = false;
 
 chatBoxMessages.onscroll = (event) => lazyLoadChat()
 
-function lazyLoadChat(event){
-  console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight/4);
+function lazyLoadChat(){
+  console.log("lol: ", chatBoxMessages.scrollTop, chatBoxMessages.scrollHeight);
+
   // LAZY LOADING
-  if (chatBoxMessages.scrollTop === 0) {
-    if (messageLimitMax === true) {
+  if (chatBoxMessages.scrollTop <= (chatBoxMessages.scrollHeight / 6)) {
+    if (messageLimitMax === true || gettingPosts === true) {
       return;
     }
     let xhr = new XMLHttpRequest();
@@ -27,11 +29,13 @@ function lazyLoadChat(event){
         channelInfo.getAttribute("key")
     );
     xhr.send();
+    gettingPosts = true;
 
     xhr.onload = () => {
-      console.log(messageLimit);
+      // console.log(messageLimit);
       let posts = JSON.parse(xhr.response);
       messageLimit = messageLimit + 10;
+      gettingPosts = false;
 
       // ADD all the posts by CSR
       if (!posts.length) {
@@ -67,7 +71,7 @@ function lazyLoadChat(event){
 
         chatBoxMessages.prepend(messageCont);
       });
-      chatBoxMessages.scrollTo(0, 10);
+      // chatBoxMessages.scrollTo(0, 10);
     };
   }
 };

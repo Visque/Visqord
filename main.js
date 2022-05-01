@@ -13,6 +13,8 @@ const auth = require("./routes/auth");
 const home = require("./routes/home");
 const channel = require("./routes/channel");
 const post = require("./routes/post");
+const user = require("./routes/user");
+const notification = require("./routes/notifications");
 
 // MiddleWares
 
@@ -34,7 +36,13 @@ app.use(
 app.use("/", home)
 app.use("/auth", auth);
 app.use("/channel", channel);
+app.use("/user", user);
 app.use("/post", post);
+app.use("/notification", notification);
+
+app.route("*").get((req, res ) => {
+  res.render("error/500.ejs")
+})
 
 
 
@@ -46,12 +54,12 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   console.log("socket connection established");
-  // socket.on("disconnect", () => {
-  //   io.emit("send message", {
-  //     message: `${socket.username} has left the chat`,
-  //     user: "Welcome Bot",
-  //   });
-  // });
+
+  socket.on("send notification", (data) => {
+    console.log(`sending notif to ${data}`, typeof data.type)
+    if(data.type == 1)
+      io.emit("friend request", {to: data.to, from: data.from})
+  })
 
   socket.on("new message", (data) => {
     console.log('send to all: ', data);
@@ -76,8 +84,15 @@ server.listen(PORT, () => {
   console.log(`Server is Live and running :)`);
 });
 
+// ToDo
 
+// Get user notif and pass to home.ejs from home.js and channel.js Routes :)
+// populate notifs via forloop in headers.ejs
+// add listeners to accept and reject button in notification
+// add friends via accept and reject
+// send channel invite notif via socket.io
+// add user to channel via channel invite
+// send invite to user via create channel invitation popup
+// Add user to user DM 
 
-// Create channel.ejs.
-// Pass channels data under for loop
-// Add a get req to /channel/encrypted(channelID)
+// :)

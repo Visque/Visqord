@@ -8,85 +8,84 @@
     <title>Visqord</title>
   </head>
   <body>
-    <div class="container flex">
-      <div class="channel-container flex-column">
-        <a href="/" style="color: #858585" >
-          <h1>VisQorD</h1>  
-        </a>
-        <hr width="80%" />
-        <div class="new-channel-container-header flex">
-          <div class="new-channel-container hide" id="new-channel-container">
-            <input
-              type="text"
-              name=""
-              class="input-text"
-              id="new-channel-name"
-              placeholder="Channel Name..."
-            />
-            <input
-              type="text"
-              name=""
-              class="input-text"
-              id="new-channel-tag"
-              placeholder="Channel Description..."
-            />
-            <input
-              type="text"
-              name=""
-              class="input-text"
-              id="new-channel-tag"
-              placeholder="#tags with space..."
-            />
-            <button type="submit" class="submit-btn" id="new-channel-submit">
-              Create
+    <div id="container" class="container flex-column">
+      <div class="container flex">
+        <div class="channel-container flex-column">
+          <a href="/" style="color: #858585">
+            <h1>VisQorD</h1>
+          </a>
+          <hr width="80%" />
+          <div class="new-channel-container-header flex">
+            <div class="new-channel-container hide" id="new-channel-container">
+              <input
+                type="text"
+                name=""
+                class="input-text"
+                id="new-channel-name"
+                placeholder="Channel Name..."
+              />
+              <input
+                type="text"
+                name=""
+                class="input-text"
+                id="new-channel-tag"
+                placeholder="Channel Description..."
+              />
+              <input
+                type="text"
+                name=""
+                class="input-text"
+                id="new-channel-tag"
+                placeholder="#tags with space..."
+              />
+              <button type="submit" class="submit-btn" id="new-channel-submit">
+                Create
+              </button>
+            </div>
+            <button id="show-create-channel" class="show-create-channel btn">
+              Create Channel
             </button>
           </div>
-          <button id="show-create-channel" class="show-create-channel btn">
-            Create Channel
-          </button>
-        </div>
-        <div class="join-channel-container-header flex">
-          <div class="join-channel-container hide" id="join-channel-container">
-            <input
-              type="text"
-              name=""
-              class="input-text"
-              id="join-channel-link"
-              placeholder="Invite Link..."
-            />
-            <button type="submit" class="submit-btn" id="join-channel-submit">
-              Join
+          <div class="join-channel-container-header flex">
+            <div class="join-channel-container hide" id="join-channel-container">
+              <input
+                type="text"
+                name=""
+                class="input-text"
+                id="join-channel-link"
+                placeholder="Invite Link..."
+              />
+              <button type="submit" class="submit-btn" id="join-channel-submit">
+                Join
+              </button>
+            </div>
+            <button id="show-join-channel" class="show-create-channel btn">
+              Join Channel
             </button>
           </div>
-          <button id="show-join-channel" class="show-create-channel btn">
-            Join Channel
-          </button>
-        </div>
-        <% if (channels.length) { %>
+          <% if (channels.length) { %>
           <h1 style="color: #e4e0e0">Channels: -</h1>
           <div class="channel-list flex-column">
-            <% for( let index = 0; index < channels.length; index++ ) { %> 
-              <%- include("./partials/channel.ejs", {channel: channels[index]}) %> 
-            <% } %>
+            <% for( let index = 0; index < channels.length; index++ ) { %> <%-
+            include("./partials/channel.ejs", {channel: channels[index]}) %> <% }
+            %>
           </div>
-        <% } %>
-      </div>
-      <div id="main" class="main flex-column">
-        <div class="header flex">
-          <div class="welcome">
-            <h1>Welcome <%= user.userName %> </h1>
-          </div>
-          <a href="/logout" class="logout btn flex">
-            Logout
-          </a>
-        </div>
-        <% if (selector.type === "dashboard") { %>
-          <div class="selector flex">
-            <%- include("./partials/dashboard.ejs", {trending: selector.dashboard}) %> 
-          </div>
-          <% } else  { %>
-            <%- include("./partials/chat.ejs", {channel: selector, user: user, posts: posts}) %> 
           <% } %>
+        </div>
+        <div id="main" class="main flex-column">
+          <%- include("./partials/header.ejs", {user: user }) %>
+          <div class="sub-main flex">
+            <% if (selector.type === "dashboard") { %>
+            <div class="selector flex">
+              <%- include("./partials/dashboard.ejs", {trending:
+              selector.dashboard}) %>
+            </div>
+            <% } else { %> <%- include("./partials/chat.ejs", {channel: selector,
+            user: user, posts: posts}) %> <% } %>
+            <%- include("partials/friends.ejs", {user: user}) %> 
+          </div>
+        </div>
+        
       </div>
     </div>
   </body>

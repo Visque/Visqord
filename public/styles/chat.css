@@ -2,13 +2,11 @@
 
 .chat-container{
     border-radius: 10px;
-    min-width: 450px;
-    max-height: 80%;
-    min-height: 70%;
+    
     width: 70%;
     background-color: rgb(255, 255, 255);
 
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -39,6 +37,7 @@
 }
 
 .message-input-container{
+    height: auto;
     justify-content: space-between;
     align-items: center;
     margin-top: auto;

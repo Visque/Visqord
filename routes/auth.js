@@ -24,6 +24,7 @@ async function firstAsync() {
 
   // "Now it's done!"
 }
+
 firstAsync();
 
 // MiddleWares
@@ -53,7 +54,7 @@ app
           res.redirect("/");
         });
       } else {
-        res.render("auth/signup", { error: "Wrong Credentials" });
+        res.render("auth/signin", { error: "Wrong Credentials" });
       }
     });
   });

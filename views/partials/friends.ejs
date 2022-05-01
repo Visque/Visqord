@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="styles/friends.css">
+<div class="friend-list flex-column">
+    <div class="friend-header">
+        <h3>
+            Friend List
+        </h3>
+    </div>
+    <div id="friends" class="friends" userId="<%= user.userId %>">
+    </div>
+    <div class="add-friend flex">
+        <input id="add-friend-input" class="add-friend-input" type="text" placeholder="Enter userName">
+        <button id="send-fr" class="send-fr btn">+</button>
+    </div>
+</div>
+<script src="scripts/friends.js"></script>

@@ -1,0 +1,51 @@
+.header{
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    border-bottom: 2px solid #75808F;
+}
+
+.visqord{
+    width: 370px;
+    text-align: center;
+}
+
+.logout{
+    align-items: center;
+}
+
+.welcome{
+    width: auto;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.drop-down{
+    width: 300px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-header:hover .notifications{
+    cursor: pointer;
+    display: block;
+    background-color: #36393F;
+    margin: 0 10px;
+}
+
+.notification-header:hover{
+    cursor: pointer;
+}
+
+
+.notifications {
+    margin: 0 10px;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
