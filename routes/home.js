@@ -10,10 +10,37 @@ const userModel = require("../database/models/users");
 const channelModel = require("../database/models/channels");
 const userChannelModel = require("../database/models/userChannels");
 const postModel = require("../database/models/posts");
+const inviteNotifModel = require("../database/models/notifications");
+const friendModel = require("../database/models/friends");
 
 // MiddleWares
 app.use(express.json());
 app.use(express.urlencoded());
+
+// Sockets
+
+const io = require("../main.js");
+
+io.on("connection", (socket) => {
+  socket.on("join user", (obj) => {
+    console.log(`user joined: user-${obj.userName}`);
+    socket.join(`user-${obj.userName}`);
+  });
+
+  socket.on("send notification", (data) => {
+    // console.log(`sending notif to ${data}`, data, `user-${data.userName}`);
+    if (data.type == 1) {
+      io.to(`user-${data.to}`).emit("friend request", {
+        notifId: data.notifId,
+        type: data.type,
+        to: data.to,
+        from: data.from,
+      });
+    }
+  });
+});
+
+// Routing
 
 app.route("/").get((req, res) => {
   if (!req.session.isLoggedIn) {
@@ -25,33 +52,21 @@ app.route("/").get((req, res) => {
   findUser({ _id: userId }, function (user) {
     if (user.status !== 0) {
       // User is Authenticated :)
-      // console.log("user is authenticated :)))");
       var context = {};
       getUserChannels(userId, function (channels) {
+        // User channels
         getUserPosts(userId, function (posts) {
+          // user posts
           sortChannelsToUserPosts(userId, channels, function (channels) {
+            // sorting channels
             trendingChannels(function (trendingChannels) {
+              // trending channels
               trendingUsers(function (trendingUsers) {
+                // trending users
                 trendingTags(function (trendingTags) {
+                  // trending tags
                   trendingRegions(function (trendingRegions) {
-
-                    // console.log("encrypting channels: ")
-                    // channels.forEach((channel) => {
-                    //   // channel._id = mongoose.Types.ObjectId()
-                    //   var id = channel._id;
-                    //   id = crypto.encrypt(id + "");
-                    //   channel._id = id;
-                    //   console.log("one: ", channel);
-                    // });
-
-                    // console.log("encrypting posts: ");
-                    // posts.forEach((post) => {
-                    //   var id = post.createdBy._id;
-                    //   id = crypto.encrypt(id + "");
-                    //   post.createdBy._id = id;
-                    //   console.log('two: ', id)
-                    // });
-
+                    // trending Regions
                     context.user = {
                       userId: userId,
                       userName: userName,
@@ -59,19 +74,30 @@ app.route("/").get((req, res) => {
 
                     context.channels = channels;
                     context.posts = posts;
+
                     context.selector = {};
                     context.selector.type = "dashboard";
                     context.selector.dashboard = {};
-
-                    context.selector.dashboard.trendingChannels = trendingChannels;
+                    context.selector.dashboard.trendingChannels =
+                      trendingChannels;
                     context.selector.dashboard.trendingUsers = trendingUsers;
                     context.selector.dashboard.trendingTags = trendingTags;
-                    context.selector.dashboard.trendingRegions = trendingRegions;
-                    console.log(
-                      "testing context: ",
-                      context.selector.dashboard
-                    );
-                    res.render("home.ejs", context);
+                    context.selector.dashboard.trendingRegions =
+                      trendingRegions;
+
+                    getUserNotifs(userId, function (notifs) {
+                      // user notifs
+                      // console.log("testing notifs: ",context.notifs);
+
+                      context.notifs = notifs;
+
+                      getUserFriends(userId, function (friendList) {
+                        // user FriendList
+                        console.log("friendList:", friendList);
+                        context.friends = friendList;
+                        res.render("home.ejs", context);
+                      });
+                    });
                   });
                 });
               });
@@ -97,9 +123,46 @@ app.route("/logout").get((req, res) => {
   });
 });
 
-
-
 // Functions
+
+function getUserNotifs(userId, callback) {
+  inviteNotifModel
+    .aggregate([
+      {
+        $match: {
+          to: mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "from",
+          foreignField: "_id",
+          as: "from",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "to",
+          foreignField: "_id",
+          as: "to",
+        },
+      },
+    ])
+    .then((notifs) => {
+      notifs.forEach((notif) => {
+        notif.to = notif.to[0];
+        notif.from = notif.from[0];
+      });
+      callback(notifs);
+    });
+}
 
 function trendingChannels(callback) {
   postModel
@@ -258,6 +321,47 @@ function getUserPosts(userId, callback) {
     });
 }
 
+function getUserFriends(userId, callback) {
+  friendModel
+    .aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              friendOne: mongoose.Types.ObjectId(userId),
+            },
+            {
+              friendTwo: mongoose.Types.ObjectId(userId),
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "friendOne",
+          foreignField: "_id",
+          as: "friendOne",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "friendTwo",
+          foreignField: "_id",
+          as: "friendTwo",
+        },
+      },
+    ])
+    .then((friendList) => {
+      friendList.forEach((friend) => {
+        friend.friendOne = friend.friendOne[0];
+        friend.friendTwo = friend.friendTwo[0];
+      });
+      callback(friendList);
+    });
+}
+
 function sortChannelsToUserPosts(userId, channels, callback) {
   // console.log("sorting :)");
   let map = [];
@@ -314,3 +418,5 @@ function setUserStatus(userId, status, callback) {
 }
 
 module.exports = app;
+
+// get notif id for accept and reject functions calls :(

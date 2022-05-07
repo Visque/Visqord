@@ -4,18 +4,56 @@ const mongoose = require("mongoose");
 
 const app = express.Router();
 
+const crypto = require("../encryption/encryption");
+
 // Database
 const userChannelModel = require("../database/models/userChannels");
 const channelModel = require("../database/models/channels");
 const postModel = require("../database/models/posts");
 const userModel = require("../database/models/users");
-const crypto = require("../encryption/encryption");
+const inviteNotifModel = require("../database/models/notifications");
+const friendModel = require("../database/models/friends");
+
 
 // MiddleWares
 app.use(express.static("public"));
 
 app.use(express.json());
 app.use(express.urlencoded());
+
+// Sockets
+
+const io = require("../main.js");
+// console.log('log sock: ', io)
+
+io.on("connection", (socket) => {
+  // console.log('log sock: ', socket)
+  socket.on("join channel", (obj) => {
+    console.log(`user joined a channel`);
+    socket.join(`chanel-${obj.channelId}`);
+  });
+
+  socket.on("new message", (data) => {
+    socket.join(data.channelId);
+    // console.log("send to channel: ", data);
+    io.to(`chanel-${data.channelId}`).emit("send message", {
+      message: data.message,
+      userName: data.userName,
+      userId: data.userId,
+      channelId: data.channelId,
+    });
+  });
+
+  socket.on("new user", (usr) => {
+    socket.username = usr;
+    io.emit("send message", {
+      message: `${socket.username} has joined the chat`,
+      user: "Welcome Bot",
+    });
+  });
+});
+
+// Routing
 
 app
   .route("/")
@@ -42,7 +80,7 @@ app.route("/:channelId").get((req, res) => {
     res.redirect("/");
     return;
   }
-  var channelId = req.params.channelId
+  var channelId = req.params.channelId;
   var userId = req.session.userId;
   var userName = req.session.userName;
 
@@ -52,42 +90,30 @@ app.route("/:channelId").get((req, res) => {
     // console.log("user channels: ", channels)
 
     getChannelPosts(channelId, function (posts) {
-
-      sortChannelsToUserPosts(userId, channels, function(channels){
-        console.log("channel posts: ", posts);
+      sortChannelsToUserPosts(userId, channels, function (channels) {
+        // console.log("channel posts: ", posts);
         posts.sort((a, b) => a.createdAt < b.createdAt);
 
-        // channels.forEach(channel => {
-        //   let id = channel._id
-        //   id = crypto.encrypt(id)
-        //   console.log('id logger: ', id)
-        //   channel.tempId = id;
-        //   console.log("id logger: ", channel._id);
-        // })
-
-        // posts.forEach((post) => {
-        //   let id = post._id;
-        //   id = crypto.encrypt(id);
-        //   post._id = id;
-        // });
-  
         context.channels = channels;
         context.user = { userId: userId, userName: userName };
         context.posts = posts;
-  
-        // console.log(context);
-  
+
         context.selector = channels.filter((channel) => {
           return channel._id == channelId;
         })[0];
 
-        // let tempId = context.selector._id;
-        // tempId = crypto.encrypt(tempId);
-        // context.selector._id = tempId;
-  
         // console.log("channels/ context: ", context);
-        res.render("home.ejs", context);
-      })
+
+        getUserNotifs(userId, function (notifs) {
+          context.notifs = notifs;
+
+          getUserFriends(userId, function (friendList) {
+            // user FriendList
+            context.friends = friendList;
+            res.render("home.ejs", context);
+          });
+        });
+      });
     });
   });
 });
@@ -101,7 +127,7 @@ app.route("/invite/:channelId").get((req, res) => {
   // var channelId = crypto.decrypt(req.params.channelId);
   // var userId = crypto.decrypt(req.params.userId);
   var userId = req.session.userId;
-  var channelId = req.params.channelId;                             // Decrypt
+  var channelId = req.params.channelId; // Decrypt
 
   getUserChannels(userId, function (channels) {
     check = channels.filter((channel) => {
@@ -130,7 +156,8 @@ function saveChannel(newChannel, callback) {
   });
 }
 
-function addUserChannel(userId, channelId, callback) {          // Resolved
+function addUserChannel(userId, channelId, callback) {
+  // Resolved
   userChannelModel.create({ userId: userId, channelId: channelId }).then(() => {
     callback();
   });
@@ -152,17 +179,86 @@ function getUserChannels(userId, callback) {
   }
 }
 
-// function getChannelPosts(channelId, callback) {
-//   postModel
-//     .find({ channelId: channelId })
-//     .populate("createdBy")
-//     .then((postList) => {
-//       console.log('normal: ', postList)
-//       callback(postList);
-//     });
-// }
+function getUserNotifs(userId, callback) {
+  inviteNotifModel
+    .aggregate([
+      {
+        $match: {
+          to: mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "from",
+          foreignField: "_id",
+          as: "from",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "to",
+          foreignField: "_id",
+          as: "to",
+        },
+      },
+    ])
+    .then((notifs) => {
+      notifs.forEach((notif) => {
+        notif.from = notif.from[0];
+      });
+      callback(notifs);
+    });
+}
 
-function getChannelPosts(channelId, callback){
+function getUserFriends(userId, callback) {
+  friendModel
+    .aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              friendOne: mongoose.Types.ObjectId(userId),
+            },
+            {
+              friendTwo: mongoose.Types.ObjectId(userId),
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "friendOne",
+          foreignField: "_id",
+          as: "friendOne",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "friendTwo",
+          foreignField: "_id",
+          as: "friendTwo",
+        },
+      },
+    ])
+    .then((friendList) => {
+      friendList.forEach((friend) => {
+        friend.friendOne = friend.friendOne[0];
+        friend.friendTwo = friend.friendTwo[0];
+      });
+      callback(friendList);
+    });
+}
+
+function getChannelPosts(channelId, callback) {
   postModel
     .aggregate([
       {
@@ -188,7 +284,7 @@ function getChannelPosts(channelId, callback){
       },
     ])
     .then((postList) => {
-      postList
+      postList;
       postList.forEach((post) => {
         post.createdBy = post.createdBy[0];
       });
@@ -233,7 +329,6 @@ function bubbleSort(arr) {
     swapped = false;
 
     for (var i = 0; i < arr.length - 1; i++) {
-      
       if (arr[i].userChannelPostCount < arr[i + 1].userChannelPostCount) {
         var temp = arr[i];
 

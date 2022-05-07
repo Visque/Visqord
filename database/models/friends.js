@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 const friendSchema = new mongoose.Schema(
   {
     friendOne: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    friendOne: {
-      type: String,
+    friendTwo: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    invitedBy:{
-      type: String,
-      required: true
-    }
+    invitedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
   },
   { timestamps: true }
 );

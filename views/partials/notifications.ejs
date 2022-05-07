@@ -1,0 +1,25 @@
+<div id="notification-header" class="notification-header">
+    <h3>
+        Notifications
+    </h3>
+    <div id="notifications" class="notifications" userName="<%= user.userName %>">
+        <% if (notifs.length) { %>
+            <% for( let index = 0; index < notifs.length; index++ ) { %>
+                <div class="notif flex-column" key="<%= notifs[index]._id %>" to="<%= notifs[index].to.userName %>" from="<%= notifs[index].from.userName %>">
+                    <div class="type">
+                        Friend Request
+                    </div>
+                    <div class="notification-container flex">
+                        <h5><%= notifs[index].from.userName %> </h5>
+                        <button class="reject-btn btn">Reject</button>
+                        <button class="accept-btn btn">Accept</button>
+                    </div>
+                </div>
+            <% } %>
+        <% } else { %>
+            <div class="notification-container empty flex">
+                <h5> No Notifications </h5>
+            </div>
+        <% } %>
+    </div>
+</div>

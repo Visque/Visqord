@@ -22,13 +22,21 @@ submitFriend.onclick = () => {
   xhr.onload = () => {
     if (xhr.status === 200) {
       // Friend Request sent :)
-      console.log("fr sent to ", name);
-      socket.emit("send notification", { type: 1, to: name, from: friends.getAttribute("userId") });
-      
-
+      console.log("fr sent to ", name, xhr);
+      let body = JSON.parse(xhr.response)
+      console.log(body)
+      socket.emit("send notification", {
+        notifId: body._id,
+        type: 1,
+        to: name,
+        from: friends.getAttribute("userName"),
+      }); 
     } else {
       // Failed to send FR
-      console.log("fr failed to send to ", user);
+      console.log("fr failed to send to ", name);
     }
+    inputFriendName.value = ""
+    inputFriendName.focus();
+
   };
 };

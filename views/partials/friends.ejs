@@ -5,7 +5,18 @@
             Friend List
         </h3>
     </div>
-    <div id="friends" class="friends" userId="<%= user.userId %>">
+    <div id="friends" class="friends" userName="<%= user.userName %>">
+        <% for( let index = 0; index < friends.length; index++ ) { %>
+            <% if (user.userName == friends[index].friendOne.userName) { %>
+                <div class="friend-item flex" friendid="<%= friends[index].friendTwo._id %>">
+                        <h6><%= friends[index].friendTwo.userName %> </h6>
+                </div>
+            <% } else { %>
+                <div class="friend-item flex" friendid="<%= friends[index].friendOne._id %>">
+                        <h6><%= friends[index].friendOne.userName %> </h6>
+                </div>
+            <% } %>
+        <% } %>
     </div>
     <div class="add-friend flex">
         <input id="add-friend-input" class="add-friend-input" type="text" placeholder="Enter userName">

@@ -1,15 +1,10 @@
 <link rel="stylesheet" href="styles/header.css">
-<div class="header flex">
+<div id="header" class="header flex" userid="<%= user.userId %>" username="<%= user.userName %>">
     <div class="welcome">
         Welcome <%= user.userName %> 
     </div>
     <div class="drop-down flex">
-        <div id="notification-header" class="notification-header">
-            <h3>
-                Notifications
-            </h3>
-            <div id="notifications" class="notifications"></div>
-        </div>
+        <%- include("./notifications.ejs", {user: user, notifs: notifs}) %> 
         <a href="/logout" class="logout btn flex">
             Logout
         </a>

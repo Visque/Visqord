@@ -8,6 +8,12 @@ const PORT = process.env.PORT || 5000
 const http = require("http"); 
 const server = http.createServer(app);
 
+// Socket
+const io = require("socket.io")(server);
+var a = 10
+// console.log("logging sock: ", io)
+module.exports = io;
+
 // Router Imports
 const auth = require("./routes/auth");
 const home = require("./routes/home");
@@ -15,6 +21,7 @@ const channel = require("./routes/channel");
 const post = require("./routes/post");
 const user = require("./routes/user");
 const notification = require("./routes/notifications");
+const friends = require("./routes/friends");
 
 // MiddleWares
 
@@ -39,6 +46,7 @@ app.use("/channel", channel);
 app.use("/user", user);
 app.use("/post", post);
 app.use("/notification", notification);
+app.use("/friend", friends);
 
 app.route("*").get((req, res ) => {
   res.render("error/500.ejs")
@@ -46,35 +54,35 @@ app.route("*").get((req, res ) => {
 
 
 
-// Socket
-const io = require("socket.io")(server);
-
 // const { Server } = require("socket.io");
 // const io = new Server(server);
 
-io.on("connection", (socket) => {
-  console.log("socket connection established");
+// io.on("connection", (socket) => {
+//   console.log("socket connection established");
+  
+//   // socket.on("send notification", (data) => {
+//   //   console.log(`sending notif to ${data}`, typeof data.type)
+//   //   if(data.type == 1){
+//   //     // socket.join(data.to);
+//   //     io.emit("friend request", { to: data.to, from: data.from })
+//   //   }
+//   // })
+  
+//   socket.on("new message", (data) => {
+//     socket.join(data.channelId);
+//     console.log('send to channel: ', data);
+//     io.to(data.channelId).emit("send message", { message: data.message, userName: data.userName, userId: data.userId, channelId: data.channelId });
+//   });
 
-  socket.on("send notification", (data) => {
-    console.log(`sending notif to ${data}`, typeof data.type)
-    if(data.type == 1)
-      io.emit("friend request", {to: data.to, from: data.from})
-  })
+//   socket.on("new user", (usr) => {
+//     socket.username = usr;
+//     io.emit("send message", {
+//       message: `${socket.username} has joined the chat`,
+//       user: "Welcome Bot",
+//     });
+//   });
 
-  socket.on("new message", (data) => {
-    console.log('send to all: ', data);
-    io.emit("send message", { message: data.message, userName: data.userName, userId: data.userId, channelId: data.channelId });
-  });
-
-  socket.on("new user", (usr) => {
-    socket.username = usr;
-    io.emit("send message", {
-      message: `${socket.username} has joined the chat`,
-      user: "Welcome Bot",
-    });
-  });
-
-});
+// });
 
 
 

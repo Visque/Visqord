@@ -18,7 +18,7 @@
 .chat-box{
     background-color: rgb(225, 202, 202);
     width: 100%;
-    height: 100%;
+    height: 700px;
 }
 
 .chat-box-messages{

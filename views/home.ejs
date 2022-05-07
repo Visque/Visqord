@@ -73,7 +73,7 @@
           <% } %>
         </div>
         <div id="main" class="main flex-column">
-          <%- include("./partials/header.ejs", {user: user }) %>
+          <%- include("./partials/header.ejs", {user: user, notifs: notifs }) %>
           <div class="sub-main flex">
             <% if (selector.type === "dashboard") { %>
             <div class="selector flex">
@@ -82,7 +82,7 @@
             </div>
             <% } else { %> <%- include("./partials/chat.ejs", {channel: selector,
             user: user, posts: posts}) %> <% } %>
-            <%- include("partials/friends.ejs", {user: user}) %> 
+            <%- include("partials/friends.ejs", {user: user, friends: friends}) %> 
           </div>
         </div>
         

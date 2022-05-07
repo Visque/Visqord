@@ -8,6 +8,7 @@ const newChannelSubmit = document.getElementById("new-channel-submit");
 const joinChannelSubmit = document.getElementById("join-channel-submit");
 const joinChannelInput = document.getElementById("join-channel-link");
 const inviteLinkList = document.querySelectorAll("#get-link");
+
 // const channelItem = document.getElementById("channel-item");
 // console.log(inviteLinkList.length);
 

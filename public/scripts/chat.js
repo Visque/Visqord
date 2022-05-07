@@ -2,13 +2,19 @@ const inputMessage = document.getElementById("message-input");
 const messageSubmit = document.getElementById("message-submit");
 const channelInfo = document.getElementById("channel-info");
 const chatBoxMessages = document.getElementById("chat-box-messages");
-const socket = io();
+// const socket = io();
 
 chatBoxMessages.scrollTo(0, chatBoxMessages.scrollHeight);
 
 let messageLimit = 10;
 let messageLimitMax = false;
 let gettingPosts = false;
+
+const channelId = channelInfo.getAttribute("key");
+// const userId = channelInfo.getAttribute("userid");
+// const userName =channelInfo.getAttribute("username");
+
+socket.emit("join channel", {channelId, userId})
 
 chatBoxMessages.onscroll = (event) => lazyLoadChat()
 
@@ -83,14 +89,14 @@ messageSubmit.onclick = (event) => {
   }
   data = {
     message: message,
-    channelId: channelInfo.getAttribute("key"),
+    channelId: channelId,
   };
 
   socketData = {
     message: message,
-    userName: channelInfo.getAttribute("username"),
-    userId: channelInfo.getAttribute("userid"),
-    channelId: channelInfo.getAttribute("key"),
+    userName: userName,
+    userId: userId,
+    channelId: channelId,
   };
 
   var xhr = new XMLHttpRequest()
@@ -101,17 +107,20 @@ messageSubmit.onclick = (event) => {
   xhr.onload = () => {
       // Add the CSR post to the chat box OR socket.io program :)
       inputMessage.value = "";
-      socket.emit("new message", socketData)
+      inputMessage.focus();
+      socket.emit("new message", socketData);
   }
 }
 
 socket.on("send message", (data) => {
-  if (channelInfo.getAttribute("key") != data.channelId){
-    return;
-  }
+  // if (channelId != data.channelId){
+  //   return;
+  // }
+  // socket.join(data.channelId)
+
   var messageCont = document.createElement("div");
   
-  if (channelInfo.getAttribute("userid") == data.userId){
+  if (userId == data.userId){
     messageCont.setAttribute("class", "message right");
   }
   else{
