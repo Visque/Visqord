@@ -1,13 +1,12 @@
-const header = document.getElementById("header");
-
-const userId = header.getAttribute("userid");
-const userName = header.getAttribute("username");
+const UserName = header.getAttribute("username");
+const UserId = header.getAttribute("username");
+console.log("okkk: ", UserName);
 
 const notifications = document.getElementById("notifications");
 const socket = io();
 
 // Socket emits to join user room
-socket.emit("join user", { userName });
+socket.emit("join user", { userName: UserName });
 
 // Socket recieves
 socket.on("notif request", (data) => {
@@ -66,7 +65,6 @@ socket.on("notif request", (data) => {
   notifications.appendChild(notif);
 });
 
-
 // Adding listeners to loaded notifs
 
 for (let index = 0; index < notifications.children.length; index++) {
@@ -80,13 +78,11 @@ for (let index = 0; index < notifications.children.length; index++) {
     let rejectBtn = currentNotif.children[1].children[1];
     let acceptBtn = currentNotif.children[1].children[2];
 
-
     rejectBtn.onclick = () => removeFriend(currentNotif, notifId);
     acceptBtn.onclick = () => acceptFriend(currentNotif, notifId);
   } else if (type == "Channel Request") {
     let rejectBtn = currentNotif.children[1].children[2];
     let acceptBtn = currentNotif.children[1].children[3];
-
 
     rejectBtn.onclick = () => removeChannel(currentNotif, notifId);
     acceptBtn.onclick = () => acceptChannel(currentNotif, notifId);

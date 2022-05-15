@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
 app
   .route("/")
   .get((req, res) => {
-    console.log("hello ::::::::::::(")
+    console.log("hello ::::::::::::(");
     res.redirect("/");
   })
   .post((req, res) => {
@@ -69,7 +69,9 @@ app
       // console.log("channel Saved succesfully");
       addUserChannel(userId, channelId, function () {
         // console.log("channel added to usersChannel");
-        res.end();
+        res
+          .status(200)
+          .json({ channelId: channelId, channelName: channelData.channelName });
       });
     });
   });
@@ -121,12 +123,11 @@ app.route("/channel/get").get((req, res) => {
   let userId = req.session.userId;
   console.log("yay getting channels :)");
   // res.end();
-  getUserChannels(userId, function(channels){
-      res.json(channels)
-  })
+  getUserChannels(userId, function (channels) {
+    res.json(channels);
+  });
   // res.redirect("/");
 });
-
 
 app.route("/invite/:channelId").get((req, res) => {
   if (!req.session.isLoggedIn) {
@@ -156,7 +157,6 @@ app.route("/invite/:channelId").get((req, res) => {
     }
   });
 });
-
 
 // Functions
 

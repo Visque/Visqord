@@ -11,8 +11,8 @@ let messageLimitMax = false;
 let gettingPosts = false;
 
 const channelId = channelInfo.getAttribute("key");
-// const userId = channelInfo.getAttribute("userid");
-// const userName =channelInfo.getAttribute("username");
+const userId = channelInfo.getAttribute("userid");
+const userName =channelInfo.getAttribute("username");
 
 socket.emit("join channel", {channelId, userId})
 
