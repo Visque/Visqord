@@ -29,12 +29,23 @@ io.on("connection", (socket) => {
 
   socket.on("send notification", (data) => {
     // console.log(`sending notif to ${data}`, data, `user-${data.userName}`);
+    console.log("checking notif recieved on server socket: ", data)
     if (data.type == 1) {
-      io.to(`user-${data.to}`).emit("friend request", {
+      io.to(`user-${data.to}`).emit("notif request", {
         notifId: data.notifId,
         type: data.type,
         to: data.to,
         from: data.from,
+      });
+    }
+    else if(data.type == 2){
+      io.to(`user-${data.to}`).emit("notif request", {
+        notifId: data.notifId,
+        type: data.type,
+        to: data.to,            // String
+        from: data.from,        // String
+        channelName: data.channelName,  // String
+        channelId: data.channelId,    // mongoose Object id
       });
     }
   });
@@ -78,22 +89,20 @@ app.route("/").get((req, res) => {
                     context.selector = {};
                     context.selector.type = "dashboard";
                     context.selector.dashboard = {};
-                    context.selector.dashboard.trendingChannels =
-                      trendingChannels;
+                    context.selector.dashboard.trendingChannels = trendingChannels;
                     context.selector.dashboard.trendingUsers = trendingUsers;
                     context.selector.dashboard.trendingTags = trendingTags;
-                    context.selector.dashboard.trendingRegions =
-                      trendingRegions;
+                    context.selector.dashboard.trendingRegions = trendingRegions;
 
                     getUserNotifs(userId, function (notifs) {
                       // user notifs
-                      // console.log("testing notifs: ",context.notifs);
-
+                      
                       context.notifs = notifs;
+                      // console.log("testing notifs: ",context.notifs);
 
                       getUserFriends(userId, function (friendList) {
                         // user FriendList
-                        console.log("friendList:", friendList);
+                        // console.log("friendList:", friendList);
                         context.friends = friendList;
                         res.render("home.ejs", context);
                       });
@@ -154,11 +163,20 @@ function getUserNotifs(userId, callback) {
           as: "to",
         },
       },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "channelId",
+          foreignField: "_id",
+          as: "channel",
+        },
+      },
     ])
     .then((notifs) => {
       notifs.forEach((notif) => {
         notif.to = notif.to[0];
         notif.from = notif.from[0];
+        notif.channel = notif.channel[0];     // BUG: Might need an if Wether `channels` exists or not since friend requests wont have channels :(
       });
       callback(notifs);
     });

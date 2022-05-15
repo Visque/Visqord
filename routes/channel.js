@@ -14,7 +14,6 @@ const userModel = require("../database/models/users");
 const inviteNotifModel = require("../database/models/notifications");
 const friendModel = require("../database/models/friends");
 
-
 // MiddleWares
 app.use(express.static("public"));
 
@@ -24,7 +23,6 @@ app.use(express.urlencoded());
 // Sockets
 
 const io = require("../main.js");
-// console.log('log sock: ', io)
 
 io.on("connection", (socket) => {
   // console.log('log sock: ', socket)
@@ -58,6 +56,7 @@ io.on("connection", (socket) => {
 app
   .route("/")
   .get((req, res) => {
+    console.log("hello ::::::::::::(")
     res.redirect("/");
   })
   .post((req, res) => {
@@ -118,6 +117,17 @@ app.route("/:channelId").get((req, res) => {
   });
 });
 
+app.route("/channel/get").get((req, res) => {
+  let userId = req.session.userId;
+  console.log("yay getting channels :)");
+  // res.end();
+  getUserChannels(userId, function(channels){
+      res.json(channels)
+  })
+  // res.redirect("/");
+});
+
+
 app.route("/invite/:channelId").get((req, res) => {
   if (!req.session.isLoggedIn) {
     res.redirect("/");
@@ -146,6 +156,7 @@ app.route("/invite/:channelId").get((req, res) => {
     }
   });
 });
+
 
 // Functions
 
@@ -208,10 +219,20 @@ function getUserNotifs(userId, callback) {
           as: "to",
         },
       },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "channelId",
+          foreignField: "_id",
+          as: "channel",
+        },
+      },
     ])
     .then((notifs) => {
       notifs.forEach((notif) => {
+        notif.to = notif.to[0];
         notif.from = notif.from[0];
+        notif.channel = notif.channel[0]; // BUG: Might need an if Wether `channels` exists or not since friend requests wont have channels :(
       });
       callback(notifs);
     });

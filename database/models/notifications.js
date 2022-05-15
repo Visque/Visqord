@@ -9,13 +9,18 @@ const inviteNotifSchema = new mongoose.Schema(
     from: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-      required: true,
+      required: false,
     },
     to: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-      required: true,
+      required: false,
     },
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "channels",
+      required: false,
+    }
   },
   { timestamps: true }
 );

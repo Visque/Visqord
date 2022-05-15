@@ -75,8 +75,8 @@ joinChannelSubmit.onclick = (event) => {
     var invLink = joinChannelInput.value.trim();
 
     var temp = invLink.split("/")
-    // console.log(temp)
     var link = "/" + temp[3] + "/" + temp[4] + "/" + temp[5];
+    // console.log(link)
 
     var xhr = new XMLHttpRequest();
     xhr.open("get", (link));
@@ -127,7 +127,6 @@ function showChannelInviteList(channelId){
         let inviteList = document.createElement("div");
         inviteList.setAttribute("class", "flex-column invite-list");
         inviteList.setAttribute("id", "invite-list");
-    
         for (let index = 0; index < userList.length; index++) {
             let user = document.createElement("div");
             user.setAttribute("class", "flex user-item");
@@ -149,10 +148,18 @@ function showChannelInviteList(channelId){
             user.appendChild(sendInvite);
 
             inviteList.appendChild(user);
-
-            sendInvite.onclick = (event) => {
-                
-            }
+            
+            console.log("clicking on btn :)")
+            sendInvite.addEventListener("click", (event) => {
+              // Send channel invite to the user
+              console.log("clicking :)");
+              // sendChannelInvite(userName, channelId)
+            })
+            // sendInvite.onclick = (event) => {
+            //   // Send channel invite to the user
+            //   console.log("clicking :)");
+            //   // sendChannelInvite(userName, channelId)
+            // };
         }
     
         inviteContainer.appendChild(searchBox);
@@ -199,6 +206,40 @@ for (let index = 0; index < inviteLinkList.length; index++) {
         notifier.remove();
     }, 1000)
   };
+}
+
+function sendChannelInvite(userName, channelId){
+
+    let postData = {
+      type: 2,
+      to: userName,
+      channelId: channelId,
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", "/notification");
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify(postData));
+
+    xhr.onload = () => {
+    if (xhr.status === 200) {
+      // Channel Request sent :)
+      console.log("fr sent to ", userName, xhr);
+      let body = JSON.parse(xhr.response)
+      console.log('channel notif: ', body)
+      socket.emit("send notification", {
+        notifId: body._id,
+        type: 2,
+        to: userName,
+        from: friends.getAttribute("userName"),
+        channelName: channelName,
+      });
+    } else {
+      // Failed to send CR
+      console.log("Cr failed to send to ", userName);
+    }
+
+    }
 }
 
 // inviteLink.onclick = (event) => {

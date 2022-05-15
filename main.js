@@ -95,9 +95,9 @@ server.listen(PORT, () => {
 // ToDo
 
 // Get user notif and pass to home.ejs from home.js and channel.js Routes :)
-// populate notifs via forloop in headers.ejs
-// add listeners to accept and reject button in notification
-// add friends via accept and reject
+// populate notifs via forloop in headers.ejs :)
+// add listeners to accept and reject button in notification :)
+// add friends via accept and reject :)
 // send channel invite notif via socket.io
 // add user to channel via channel invite
 // send invite to user via create channel invitation popup

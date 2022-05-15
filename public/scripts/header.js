@@ -6,11 +6,11 @@ const userName = header.getAttribute("username");
 const notifications = document.getElementById("notifications");
 const socket = io();
 
-// Socket emits
-socket.emit("join user", {userName});
+// Socket emits to join user room
+socket.emit("join user", { userName });
 
 // Socket recieves
-socket.on("friend request", (data) => {
+socket.on("notif request", (data) => {
   if (notifications.children[0].classList.contains("empty")) {
     // Removing `no notifications` div
     notifications.children[0].remove();
@@ -23,11 +23,6 @@ socket.on("friend request", (data) => {
 
   let notifHeader = document.createElement("div");
   notifHeader.setAttribute("class", "type");
-  if (data.type == 1) {
-    notifHeader.innerText = "Friend Request";
-  } else if (data.type == 2) {
-    notifHeader.innerText = "Channel Request";
-  }
 
   let notifCont = document.createElement("div");
   notifCont.setAttribute("class", "notification-container flex");
@@ -38,12 +33,28 @@ socket.on("friend request", (data) => {
   let accept = document.createElement("button");
   accept.setAttribute("class", "accept-btn btn");
   accept.innerHTML = `Accept`;
-  accept.addEventListener("click",() => acceptFriend(notif, data.notifId));                         // adding listeners to new elements
 
   let reject = document.createElement("button");
   reject.setAttribute("class", "reject-btn btn");
   reject.innerHTML = `Reject`;
-  reject.addEventListener("click",() => removeFriend(notif, data.notifId));                         // adding listeners to new elements
+
+  if (data.type == 1) {
+    notifHeader.innerText = "Friend Request";
+    accept.addEventListener("click", () => acceptFriend(notif, data.notifId));
+    reject.addEventListener("click", () => removeFriend(notif, data.notifId));
+  } else if (data.type == 2) {
+    notifHeader.innerText = "Channel Request";
+    notif.setAttribute("channelName", data.channelName);
+    notif.setAttribute("channelId", data.channelId);
+
+    let invitedChannelName = document.createElement("h5");
+    invitedChannelName.innerHTML = data.channelName;
+
+    accept.addEventListener("click", () => acceptChannel(notif, data.notifId));
+    reject.addEventListener("click", () => removeChannel(notif, data.notifId));
+
+    notifCont.appendChild(invitedChannelName);
+  }
 
   notifCont.appendChild(frFrom);
   notifCont.appendChild(reject);
@@ -55,6 +66,9 @@ socket.on("friend request", (data) => {
   notifications.appendChild(notif);
 });
 
+
+// Adding listeners to loaded notifs
+
 for (let index = 0; index < notifications.children.length; index++) {
   let currentNotif = notifications.children[index];
   let notifId = currentNotif.getAttribute("key");
@@ -63,25 +77,25 @@ for (let index = 0; index < notifications.children.length; index++) {
   console.log(type);
 
   if (type == "Friend Request") {
-    let userName = currentNotif.children[1].children[0];
     let rejectBtn = currentNotif.children[1].children[1];
     let acceptBtn = currentNotif.children[1].children[2];
 
-    console.log(userName, rejectBtn);
 
-    rejectBtn.onclick = () => removeFriend(currentNotif, notifId)
+    rejectBtn.onclick = () => removeFriend(currentNotif, notifId);
+    acceptBtn.onclick = () => acceptFriend(currentNotif, notifId);
+  } else if (type == "Channel Request") {
+    let rejectBtn = currentNotif.children[1].children[2];
+    let acceptBtn = currentNotif.children[1].children[3];
 
-    acceptBtn.onclick = () => acceptFriend(currentNotif, notifId)
 
-  } else {
-    console.log("channel invite type :)");
+    rejectBtn.onclick = () => removeChannel(currentNotif, notifId);
+    acceptBtn.onclick = () => acceptChannel(currentNotif, notifId);
   }
 }
 
-
 // Functions
 
-function removeFriend(currentNotif, notifId){
+function removeChannel(currentNotif, notifId) {
   let xhr = new XMLHttpRequest();
   xhr.open("delete", `/notification/${notifId}`);
   xhr.send();
@@ -91,14 +105,24 @@ function removeFriend(currentNotif, notifId){
   };
 }
 
-function acceptFriend(currentNotif, notifId){
+function removeFriend(currentNotif, notifId) {
+  let xhr = new XMLHttpRequest();
+  xhr.open("delete", `/notification/${notifId}`);
+  xhr.send();
+
+  xhr.onload = () => {
+    currentNotif.remove();
+  };
+}
+
+function acceptFriend(currentNotif, notifId) {
   console.log("hello :)");
   let xhr = new XMLHttpRequest();
   xhr.open("post", `/friend`);
-  xhr.setRequestHeader("Content-type", "application/json")
+  xhr.setRequestHeader("Content-type", "application/json");
 
-  let friendOne = currentNotif.getAttribute("to")
-  let friendTwo = currentNotif.getAttribute("from")
+  let friendOne = currentNotif.getAttribute("to");
+  let friendTwo = currentNotif.getAttribute("from");
   xhr.send(
     JSON.stringify({
       friend1: friendOne,
@@ -107,8 +131,25 @@ function acceptFriend(currentNotif, notifId){
   );
 
   xhr.onload = () => {
-    console.log("yay freind added :)")
+    console.log("yay freind added :)");
     removeFriend(currentNotif, notifId);
+    window.location.href = "/";
+  };
+}
+
+function acceptChannel(currentNotif, notifId) {
+  let channelId = currentNotif.getAttribute("channelid");
+  console.log("log check channelID :) :) :) :) :::", channelId);
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("get", `/channel/invite/${channelId}`);
+  xhr.setRequestHeader("Content-type", "application/json");
+
+  xhr.send();
+
+  xhr.onload = () => {
+    console.log("yay Channel added :)");
+    removeChannel(currentNotif, notifId);
     window.location.href = "/";
   };
 }

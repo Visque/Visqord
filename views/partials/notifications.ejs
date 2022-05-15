@@ -5,16 +5,30 @@
     <div id="notifications" class="notifications" userName="<%= user.userName %>">
         <% if (notifs.length) { %>
             <% for( let index = 0; index < notifs.length; index++ ) { %>
-                <div class="notif flex-column" key="<%= notifs[index]._id %>" to="<%= notifs[index].to.userName %>" from="<%= notifs[index].from.userName %>">
-                    <div class="type">
-                        Friend Request
+                <% if (notifs[index].type == 1) { %>
+                    <div class="notif flex-column" key="<%= notifs[index]._id %>" to="<%= notifs[index].to.userName %>" from="<%= notifs[index].from.userName %>">
+                        <div class="type">
+                            Friend Request
+                        </div>
+                        <div class="notification-container flex">
+                            <h5><%= notifs[index].from.userName %> </h5>
+                            <button class="reject-btn btn">Reject</button>
+                            <button class="accept-btn btn">Accept</button>
+                        </div>
                     </div>
-                    <div class="notification-container flex">
-                        <h5><%= notifs[index].from.userName %> </h5>
-                        <button class="reject-btn btn">Reject</button>
-                        <button class="accept-btn btn">Accept</button>
+                <% } else if (notifs[index].type == 2) { %>
+                    <div class="notif flex-column" key="<%= notifs[index]._id %>" to="<%= notifs[index].to.userName %>" from="<%= notifs[index].from.userName %>" channelname="<%= notifs[index].channel.channelName %>" channelid="<%= notifs[index].channel._id %>">
+                        <div class="type">
+                            Channel Request
+                        </div>
+                        <div class="notification-container flex">
+                            <h5><%= notifs[index].channel.channelName %> </h5>
+                            <h5><%= notifs[index].from.userName %> </h5>
+                            <button class="reject-btn btn">Reject</button>
+                            <button class="accept-btn btn">Accept</button>
+                        </div>
                     </div>
-                </div>
+                <% } %>
             <% } %>
         <% } else { %>
             <div class="notification-container empty flex">
